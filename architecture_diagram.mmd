@@ -1,0 +1,63 @@
+flowchart TB
+    subgraph UI["🎨 STREAMLIT UI - app.py"]
+        A[User Interface]
+    end
+
+    subgraph PHASE1["🟣 PHASE 1: REPOSITORY INGESTION"]
+        B[GitHub API]
+        C[GithubFileLoader<br/>github_loader.py]
+        D[Access Token Auth]
+        E[Source Code Files]
+        F[Documentation]
+        G[Git Commits]
+    end
+
+    subgraph PHASE2["🔵 PHASE 2: SEMANTIC INDEXING"]
+        H[Document Processor<br/>document_processor.py]
+        I[AST Parser]
+        J[Chunker]
+        K[Sentence Transformers<br/>embeddings.py]
+        L[Embeddings 384D]
+        M[ChromaDB<br/>vector_store.py]
+    end
+
+    subgraph PHASE3["🟢 PHASE 3: CONTEXT RETRIEVAL"]
+        N[User Query]
+        O[Query Embedder<br/>retrieval.py]
+        P[Vector Similarity Search]
+        Q[Context Retriever]
+        R[Retrieved Context]
+    end
+
+    subgraph PHASE4["🟠 PHASE 4: GROUNDED GENERATION"]
+        S[LLM Groq<br/>llm.py]
+        T[Answer Generator]
+        U[References Provider]
+        V[Final Answer]
+    end
+
+    A --> B
+    A --> N
+    B --> C
+    C --> D
+    D --> E
+    D --> F
+    D --> G
+    E --> H
+    F --> H
+    G --> H
+    H --> I --> J
+    J --> K --> L
+    L --> M
+    N --> O
+    O --> P
+    M --> P
+    P --> Q --> R
+    R --> S
+    S --> T --> U --> V
+    V --> A
+
+    style PHASE1 fill:#e6d5f5
+    style PHASE2 fill:#d5e5f5
+    style PHASE3 fill:#d5f5e5
+    style PHASE4 fill:#f5e5d5

@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+rag_env/
+venv/
+env/
+ENV/
+.venv
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# Cache
+.cache/
+*.cache
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
+"*.ipynb" 
