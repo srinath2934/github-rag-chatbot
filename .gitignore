@@ -44,16 +44,16 @@ dist/
 # Cache
 .cache/
 *.cache
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
-"*.ipynb" 
+
+# Jupyter Notebooks
+*.ipynb
+
+# ChromaDB / Vector Database
+chroma_db*/
+*.bin
+*.pickle
+
+# Generated Images
+*.png
+*.jpg
+*.jpeg
