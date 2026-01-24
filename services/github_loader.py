@@ -19,7 +19,7 @@ from typing import List, Tuple, Optional, Dict, Any, Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
-from langchain.schema import Document
+from langchain_core.documents import Document
 
 # Logging setup
 logger = logging.getLogger(__name__)

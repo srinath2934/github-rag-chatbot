@@ -3,7 +3,7 @@ Retrieval Service - Smart Code Search
 Learn: How to find relevant code using semantic similarity
 """
 from typing import List, Dict
-from langchain.schema import Document
+from langchain_core.documents import Document
 from langchain_community.vectorstores import Chroma
 import logging
 

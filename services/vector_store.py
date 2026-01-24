@@ -3,7 +3,7 @@ Vector Store - ChromaDB Management
 Learn: How to store and retrieve vector embeddings
 """
 from typing import List, Optional
-from langchain.schema import Document
+from langchain_core.documents import Document
 from langchain_community.vectorstores import Chroma
 from services.embeddings import get_embeddings_model
 import logging

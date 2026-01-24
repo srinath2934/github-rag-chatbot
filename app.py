@@ -17,7 +17,7 @@ from services.embeddings import get_embeddings_model
 from services.retrieval import retrieve_context, format_context_for_llm, get_citations
 from langchain_community.vectorstores import Chroma
 from langchain_groq import ChatGroq
-from langchain.schema import Document
+from langchain_core.documents import Document
 
 # Load environment variables
 load_dotenv()
@@ -43,26 +43,30 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Import Google Fonts - Using Charter for that Anthropic feel */
+    /* Import Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Charter:wght@400;500;600;700&family=Source+Sans+Pro:wght@400;600&display=swap');
     
-    /* Global Styles - Anthropic-inspired */
+    /* 
+       GLOBAL COLOR OVERRIDE 
+       Forces dark text regardless of system dark/light mode for our light beige theme 
+    */
+    .stApp, .stMarkdown, p, h1, h2, h3, h4, h5, h6, li, span, label, div {
+        color: #2d2d2d !important;
+    }
+
     * {
         font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
-    /* Main container - Clean beige background */
     .main {
         background: #f7f5f2;
         padding: 2rem;
     }
     
-    /* App background */
     .stApp {
         background: #f7f5f2;
     }
     
-    /* Header styling - Minimal and elegant */
     .header {
         background: #ffffff;
         color: #2d2d2d;
@@ -71,42 +75,36 @@ st.markdown("""
         text-align: center;
         margin-bottom: 2rem;
         border: 1px solid #e8e3dc;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
     }
     
-    .header h1 {
-        font-size: 2.5rem;
-        font-weight: 600;
-        margin: 0;
-        color: #2d2d2d;
-        letter-spacing: -0.02em;
-    }
-    
-    .header p {
-        font-size: 1.1rem;
-        margin-top: 0.75rem;
-        color: #6b6b6b;
-        font-weight: 400;
-    }
-    
-    /* Sidebar styling - Clean beige theme */
+    /* Sidebar glassmorphism-ish style */
     [data-testid="stSidebar"] {
         background: #ebe8e3;
         border-right: 1px solid #d4cfc4;
     }
     
-    [data-testid="stSidebar"] * {
-        color: #2d2d2d !important;
+    /* Quick Select Cards */
+    .repo-card {
+        background: #ffffff;
+        border: 1px solid #d4cfc4;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
     
-    [data-testid="stSidebar"] h1,
-    [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3 {
-        color: #2d2d2d !important;
-        font-weight: 600;
+    .repo-card:hover {
+        border-color: #9a8f7f;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transform: translateY(-2px);
     }
-    
-    /* Button styling - Light and clean */
+
+    /* Primary and Accent Buttons */
     .stButton > button {
         background: #ffffff !important;
         color: #2d2d2d !important;
@@ -114,72 +112,16 @@ st.markdown("""
         border-radius: 8px;
         padding: 0.625rem 1.5rem;
         font-weight: 600;
-        font-size: 0.95rem;
         transition: all 0.2s ease;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
     
     .stButton > button:hover {
         background: #f7f5f2 !important;
         border-color: #9a8f7f !important;
         box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-        transform: translateY(-1px);
     }
     
-    /* Input styling - Clean and minimal */
-    .stTextInput > div > div > input,
-    .stTextArea > div > div > textarea {
-        border-radius: 8px;
-        border: 1px solid #d4cfc4;
-        padding: 0.625rem;
-        background: #ffffff;
-        transition: border-color 0.2s ease;
-        color: #2d2d2d;
-    }
-    
-    .stTextInput > div > div > input:focus,
-    .stTextArea > div > div > textarea:focus {
-        border-color: #9a8f7f;
-        box-shadow: 0 0 0 3px rgba(154, 143, 127, 0.1);
-        outline: none;
-    }
-    
-    /* Message styling - Anthropic-inspired chat bubbles */
-    .user-message {
-        background: #e8e3dc;
-        color: #2d2d2d;
-        padding: 1rem 1.25rem;
-        border-radius: 12px;
-        margin: 1rem 0;
-        border: 1px solid #d4cfc4;
-    }
-    
-    .bot-message {
-        background: #ffffff;
-        color: #2d2d2d;
-        padding: 1rem 1.25rem;
-        border-radius: 12px;
-        margin: 1rem 0;
-        border: 1px solid #e8e3dc;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    }
-    
-    /* Citation styling - Clean and subtle */
-    .citation {
-        background: #f7f5f2;
-        border-left: 3px solid #9a8f7f;
-        padding: 0.875rem;
-        border-radius: 6px;
-        margin: 0.5rem 0;
-        transition: all 0.2s ease;
-    }
-    
-    .citation:hover {
-        background: #ebe8e3;
-        border-left-width: 4px;
-    }
-    
-    /* Status badges - Subtle colors */
+    /* Status feedback */
     .status-badge {
         display: inline-block;
         padding: 0.4rem 0.875rem;
@@ -189,113 +131,8 @@ st.markdown("""
         margin: 0.25rem;
     }
     
-    .status-success {
-        background: #e8f5e9;
-        color: #2e7d32;
-        border: 1px solid #c8e6c9;
-    }
-    
-    .status-info {
-        background: #e3f2fd;
-        color: #1565c0;
-        border: 1px solid #bbdefb;
-    }
-    
-    .status-warning {
-        background: #fff3e0;
-        color: #e65100;
-        border: 1px solid #ffe0b2;
-    }
-    
-    /* Progress bar - Minimal style */
-    .stProgress > div > div > div {
-        background: #9a8f7f;
-    }
-    
-    /* Metric styling - Clean numbers */
-    [data-testid="stMetricValue"] {
-        font-size: 1.875rem;
-        font-weight: 600;
-        color: #2d2d2d;
-    }
-    
-    /* Expander styling - Anthropic style */
-    .streamlit-expanderHeader {
-        background: #f7f5f2;
-        border-radius: 8px;
-        font-weight: 600;
-        color: #2d2d2d;
-        border: 1px solid #e8e3dc;
-    }
-    
-    /* Code block styling */
-    code {
-        background: #f7f5f2;
-        padding: 0.2rem 0.4rem;
-        border-radius: 4px;
-        font-size: 0.9em;
-        color: #2d2d2d;
-        border: 1px solid #e8e3dc;
-    }
-    
-    pre {
-        background: #2d2d2d;
-        color: #e8e3dc;
-        padding: 1rem;
-        border-radius: 8px;
-        overflow-x: auto;
-        border: 1px solid #4a4a4a;
-    }
-    
-    /* Chat input - Clean styling */
-    .stChatInput > div {
-        background: #ffffff;
-        border: 1px solid #d4cfc4;
-        border-radius: 8px;
-    }
-    
-    /* Divider - Subtle */
-    hr {
-        border: none;
-        border-top: 1px solid #e8e3dc;
-        margin: 1.5rem 0;
-    }
-    
-    /* Links - Anthropic style */
-    a {
-        color: #6b6b6b;
-        text-decoration: underline;
-        transition: color 0.2s ease;
-    }
-    
-    a:hover {
-        color: #2d2d2d;
-    }
-    
-    /* Selection color */
-    ::selection {
-        background: #d4cfc4;
-        color: #2d2d2d;
-    }
-    
-    /* Scrollbar - Minimal */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: #f7f5f2;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: #d4cfc4;
-        border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: #9a8f7f;
-    }
+    .status-warning { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
+    .status-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -559,7 +396,11 @@ FORMAT:
 ### Code Reference (if applicable)
 ```[language]
 [code snippet]
-```"""
+```
+
+### 🛠️ Command Breakdown (if applicable)
+- `[command]`: [What this command does and why it is used]
+"""
         
         response = llm.invoke(prompt)
         answer = response.content
@@ -616,10 +457,32 @@ def render_sidebar():
             
         # PROGESSIVE DISCLOSURE: Only show input form if needed
         if not st.session_state.repo_loaded or st.session_state.get('show_load_form', False):
-            # Repository input section
-            st.subheader("📦 Load Repository")
+            # 🌟 VISUAL DISCOVERY: Quick-Start Cards
+            st.subheader("🌟 Visual Discovery")
+            st.write("Pick a popular repo to start instantly:")
             
-            st.info("💡 **Tip:** You can paste either:\n- Full URL: `https://github.com/owner/repo`\n- Or just: `owner/repo`")
+            # Curated popular repositories
+            EXAMPLES = [
+                {"repo": "langchain-ai/langchain", "name": "LangChain", "icon": "🦜"},
+                {"repo": "facebook/react", "name": "React", "icon": "⚛️"},
+                {"repo": "fastapi/fastapi", "name": "FastAPI", "icon": "🚀"},
+                {"repo": "srinath2934/execflow-ai", "name": "ExecFlow", "icon": "⚙️"},
+            ]
+            
+            # Create a 2x2 grid for visuals
+            col_a, col_b = st.columns(2)
+            selected_example = None
+            
+            for i, example in enumerate(EXAMPLES):
+                target_col = col_a if i % 2 == 0 else col_b
+                with target_col:
+                    if st.button(f"{example['icon']} {example['name']}", use_container_width=True, help=f"Explore {example['repo']}"):
+                        selected_example = example['repo']
+
+            st.divider()
+            
+            # Manual Repository input section
+            st.subheader("📦 Manual Load")
             
             repo_url = st.text_input(
                 "GitHub Repository",
@@ -635,63 +498,33 @@ def render_sidebar():
                 key="branch_input"
             )
             
-            col1, col2 = st.columns([3, 1])
-            with col1:
-                load_button = st.button("🚀 Load Repository", use_container_width=True, type="primary")
-            with col2:
-                if st.button("ℹ️", help="Click for help"):
-                    st.info("""
-                    **How to load a repository:**
-                    
-                    1. Copy the GitHub URL (e.g., https://github.com/username/repo)
-                    2. Paste it in the box above
-                    3. Click 'Load Repository'
-                    4. Wait 1-2 minutes
-                    5. Start asking questions!
-                    
-                    **Examples:**
-                    - https://github.com/facebook/react
-                    - facebook/react
-                    - pytorch/pytorch
-                    """)
+            load_button = st.button("🚀 Load Repository", use_container_width=True, type="primary")
             
-            # Create a placeholder for the status section so we can control it dynamically
-            status_placeholder = st.empty()
+            # Handle loading (either from button or example card)
+            active_repo = selected_example if selected_example else (repo_url if load_button else None)
             
-            if load_button:
-                if repo_url:
-                    # CLEAR the status section immediately to remove "No Repository Loaded" clutter
-                    status_placeholder.empty()
+            if active_repo:
+                # Clear previous state
+                st.cache_resource.clear()
+                
+                with st.spinner(f"✨ Magical extraction of {active_repo}..."):
+                    vectorstore, doc_count, error = load_github_repo(active_repo, branch)
                     
-                    # Clear the LLM cache to use the new model
-                    st.cache_resource.clear()
-                    
-                    with st.spinner("Loading repository..."):
-                        vectorstore, doc_count, error = load_github_repo(repo_url, branch)
+                    if error:
+                        st.error(f"❌ Error: {error}")
+                    else:
+                        st.session_state.vectorstore = vectorstore
+                        st.session_state.document_count = doc_count
+                        st.session_state.repo_loaded = True
+                        st.session_state.current_repo = active_repo
+                        st.session_state.show_load_form = False
                         
-                        if error:
-                            st.error(f"❌ Error: {error}")
-                            st.warning("💡 **Try this:**\n- Check if the URL is correct\n- Try using 'master' instead of 'main'\n- Make sure the repo is public")
-                        else:
-                            st.session_state.vectorstore = vectorstore
-                            st.session_state.document_count = doc_count
-                            st.session_state.repo_loaded = True
-                            st.session_state.current_repo = repo_url
-                            
-                            # HIDE the form after successful load
-                            st.session_state.show_load_form = False
-                            
-                            # Add proactive welcome message
-                            st.session_state.messages = [{
-                                "role": "assistant",
-                                "content": f"🎉 **Success!** I've loaded `{repo_url}`.\n\nI processed **{doc_count}** chunks of code. I'm ready to answer your questions!\n\n**Try asking:**\n- What does this code do?\n- How does the main functionality work?\n- Are there any known issues?"
-                            }]
-                            
-                            st.success(f"✅ Loaded {doc_count} document chunks!")
-                            st.balloons()
-                            st.rerun()
-                else:
-                    st.warning("⚠️ Please enter a repository URL")
+                        st.session_state.messages = [{
+                            "role": "assistant",
+                            "content": f"🎉 **Magical Ingestion Complete!**\n\nI've analyzed `{active_repo}` and structured **{doc_count}** segments of intelligence. I'm ready for your questions."
+                        }]
+                        st.balloons()
+                        st.rerun()
         
         else:
             # COMPACT STATE: Show when repo is loaded
@@ -894,6 +727,10 @@ def render_chat_interface():
                 [code snippet]
                 ```
                 
+                ### 🛠️ Command Breakdown
+                (If you suggested terminal commands like pip, git, or python, explain exactly what each flag/part does here)
+                - `[command part]`: [Explanation]
+
                 ### 🔗 Source Files
                 (List the filenames used)
                 """

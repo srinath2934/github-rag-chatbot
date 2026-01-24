@@ -12,13 +12,13 @@ This ensures maximum context preservation for code RAG systems.
 import ast
 import os
 from typing import List, Dict, Optional
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 try:
     from langchain_text_splitters import Language
 except ImportError:
     # Fallback for older versions
     from langchain.text_splitter import Language
-from langchain.schema import Document
+from langchain_core.documents import Document
 import logging
 
 # Import notebook parser

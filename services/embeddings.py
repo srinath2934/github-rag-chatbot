@@ -1,7 +1,7 @@
 """
 Embeddings - Convert text to vectors using HuggingFace
 """
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ def get_embeddings_model():
     
     embeddings = HuggingFaceEmbeddings(
         model_name="sentence-transformers/all-MiniLM-L6-v2",
-        model_kwargs={'device': 'cpu'},  # Using CPU (change to 'cuda' if you have GPU)
+        model_kwargs={'device': 'cuda'},  # Using CPU (change to 'cuda' if you have GPU)
         encode_kwargs={'normalize_embeddings': True}
     )
     

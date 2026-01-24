@@ -6,7 +6,7 @@ import os
 import requests
 import base64
 from typing import List, Tuple
-from langchain.schema import Document
+from langchain_core.documents import Document
 from dotenv import load_dotenv
 
 
