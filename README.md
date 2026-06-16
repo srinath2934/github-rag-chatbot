@@ -1,114 +1,27 @@
 # 🧠 Semantic Repository Intelligence System for GitHub Codebases
 
-An enterprise-grade Retrieval-Augmented Generation (RAG) system that enables developers to semantically understand and query large GitHub repositories through natural language interactions. Transform complex codebases into intelligent knowledge systems.
+An enterprise-grade Retrieval-Augmented Generation (RAG) system that enables developers to semantically understand and query large GitHub repositories through natural language interactions.
 
 ---
 
 ## 🎬 Live Demo - See It In Action
 
-### Repository Loading & Indexing
-```
-┌─────────────────────────────────────────────────────────┐
-│  🤖 RepoChat - Instant GitHub Q&A                      │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  📦 Connect to any GitHub repository                   │
-│  🧠 Smart code parsing and chunking                    │
-│  🔍 Semantic search across codebase                    │
-│  💬 Chat with your code in natural language            │
-│                                                         │
-│  [🚀 Load Repository] [🔄 Reset All]                  │
-├─────────────────────────────────────────────────────────┤
-│  ⚙️ CONFIGURATION                                       │
-│  ────────────────────────────────                       │
-│  🌟 Visual Discovery                                    │
-│  [🦜 LangChain]  [⚛️  React]                            │
-│  [🚀 FastAPI]    [⚙️  ExecFlow]                         │
-│                                                         │
-│  📦 Manual Load                                         │
-│  Repository: github.com/facebook/react                 │
-│  Branch: main                                           │
-│  [🚀 Load Repository]                                   │
-└─────────────────────────────────────────────────────────┘
+### 🖼️ Interface Screenshots
 
-Processing:
-  🔄 Loading GitHub repository...
-  📥 Downloading files... [████████████░░░░░░░] 85%
-  📥 Loaded 1,247 documents
-  🔪 Splitting documents into chunks... [DONE]
-  ✅ Created 3,892 chunks
-  🧠 Generating embeddings... [████████████████████] 100%
-  💾 Building vector database... [DONE]
-  ✅ Repository loaded successfully!
-```
+**Landing Page** - Connect to any GitHub repository
+![Landing Page](https://raw.githubusercontent.com/srinath2934/RepoChat/main/docs/screenshots/landing_page.png)
 
-### Asking Questions - Real-Time Streaming
-```
-┌─────────────────────────────────────────────────────────┐
-│  🤖 RepoChat | facebook/react                          │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  👤 You:                                                │
-│  How does React's hooks system work?                   │
-│                                                         │
-│  🤖 Assistant:                                          │
-│  ### 🎯 Summary                                         │
-│  React Hooks provide a way to use state and other     │
-│  React features without writing class components.      │
-│                                                         │
-│  ### 🔍 Key Details                                    │
-│  • useState manages functional component state         │
-│  • useEffect handles side effects & lifecycle          │
-│  • Custom hooks enable code reuse & abstraction        │
-│  • Hooks follow specific rules for reliability         │
-│                                                         │
-│  ### 💻 Code Reference                                 │
-│  ```javascript                                         │
-│  function Counter() {                                  │
-│    const [count, setCount] = useState(0);             │
-│    useEffect(() => {                                   │
-│      console.log(`Count: ${count}`);                  │
-│    }, [count]);                                        │
-│    return <button onClick={() => setCount(count+1)}> │
-│  }                                                      │
-│  ```                                                   │
-│                                                         │
-│  [📚 View Sources ▼]                                    │
-│    📄 Source 1: packages/react/src/hooks/useState.js  │
-│    📍 Lines: 42-89                                      │
-│    🔗 View on GitHub                                   │
-│                                                         │
-│  💬 Ask me anything about this repository...           │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
+**Repository Loaded** - Smart code parsing and indexing
+![Repo Loaded](https://raw.githubusercontent.com/srinath2934/RepoChat/main/docs/screenshots/repo_loaded.png)
 
-### Repository Structure Browser
-```
-### 📁 Repository Structure
+**AI Response** - Semantic search with source citations
+![AI Response](https://raw.githubusercontent.com/srinath2934/RepoChat/main/docs/screenshots/ai_response.png)
 
-**Root files:**
-- `.gitignore`
-- `package.json`
-- `README.md`
-
-**`packages/`**
-  - `react/`
-  - `react-dom/`
-  - `shared/`
-
-**`packages/react/src/`**
-  - `hooks.js`
-  - `useState.js`
-  - `useEffect.js`
-  - `useContext.js`
-
-**`fixtures/`**
-  - `nesting/`
-  - `dom/`
-
-Total files: 1,247
-```
+### 🎥 Demo Video
+<video width="100%" controls>
+  <source src="https://raw.githubusercontent.com/srinath2934/RepoChat/main/docs/demo_recording.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ---
 
@@ -156,7 +69,7 @@ Modern repositories contain thousands of source files, documentation, and config
 - Preserve semantic meaning in code retrieval
 - Handle domain-specific naming conventions
 
-**This project solves these challenges** by building a Retrieval-Augmented Generation system that semantically understands GitHub repositories using advanced embeddings, vector retrieval, and context-aware LLM augmentation.
+**This project solves these challenges** by building a Retrieval-Augmented Generation system that semantically understands GitHub repositories using advanced embeddings, vector retrieval, and context-aware generation.
 
 ---
 
@@ -516,5 +429,5 @@ MIT License - See LICENSE file for details
 
 **Built with intelligence. Designed for scale. Ready for production.** 🚀
 
-*Last Updated: 2026-05-15*  
+*Last Updated: 2026-06-16*  
 *Maintained by: srinath2934*
